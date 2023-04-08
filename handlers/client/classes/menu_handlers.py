@@ -30,7 +30,7 @@ class MenuHandlers:
     async def display_menu(self, message: types.Message = None,
                            callbackQuery: types.CallbackQuery = None):
         """Display menu"""
-        self.all_vacancies = await db.select_data(message, 'vacancies', '*')
+        self.all_vacancies = await db.select_data(message, '*', 'vacancies')
 
         self.inline_kb = InlineKeyboardMarkup()\
             .row(InlineKeyboardButton(text="◀️",
@@ -40,10 +40,7 @@ class MenuHandlers:
                  InlineKeyboardButton(text="▶️",
                                       callback_data="next"))
 
-        self.vacs_list = self.all_vacancies[self.previous_page *
-                                            self.VACANCIES_PER_PAGE:
-                                            self.page *
-                                            self.VACANCIES_PER_PAGE]
+        self.vacs_list = self.all_vacancies[self.previous_page * self.VACANCIES_PER_PAGE: self.page * self.VACANCIES_PER_PAGE]
         for i, vac in enumerate(self.vacs_list):
             if callbackQuery is None:
                 if i == 4:

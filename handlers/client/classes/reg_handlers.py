@@ -16,6 +16,7 @@ class RegHandlers:
     """
     buttons_obj: ButtonsHandlers
     dp: Dispatcher
+    methods: list
 
     def __init__(self, dp: Dispatcher):
         self.buttons_obj = ButtonsHandlers()
@@ -26,17 +27,12 @@ class RegHandlers:
         """This method calls all methods of the class except itself,
         and methods that start with '__'"""
 
-        self.methods_list = [method for method in dir(self) if callable(getattr(self, method)) and not method.startswith("__")]
+        self.methods = [method for method in dir(self) if callable(getattr(self, method)) and not method.startswith("__")]
 
-        print(f'methods: {self.methods_list}')
-        for method in self.methods_list:
+        for method in self.methods:
             if method == inspect.currentframe().f_code.co_name:
                 pass
             else:
-                print(f'current method: {inspect.currentframe().f_code.co_name}')
-                print(f'for method: {method}')
-                # if method == 'capitalize':
-                #     continue
                 getattr(self, method)()
         self.dp.register_message_handler(self.buttons_obj.start)
 

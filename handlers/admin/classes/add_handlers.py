@@ -21,7 +21,7 @@ class AddHandlers:
                 await message.answer(str(data), reply_markup=start)
             # await db.sql_add(state=state)
             async with state.proxy() as data:
-                await db.db_obj.insert_data(message, 'vacancies',
+                await db.insert_data(message, 'vacancies',
                                             'name, desc, salary',
                                             f"'{data['name']}', '{data['desc']}', '{data['salary']}'")
             await state.finish()

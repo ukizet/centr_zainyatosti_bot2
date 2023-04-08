@@ -27,6 +27,9 @@ class Database:
             self.conn = sq.connect(
                 f'centr_zainyatosti_bot2/database/{db_name}')
         self.cursor = self.conn.cursor()
+        self.create_table(
+            'vacancies',
+            'ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, status TEXT DEFAULT "active", name TEXT, desc TEXT, salary REAL')
         if self.conn:
             print('Database connected(class Database)')
 
