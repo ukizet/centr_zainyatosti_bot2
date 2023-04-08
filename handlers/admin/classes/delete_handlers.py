@@ -12,6 +12,9 @@ class DeleteHandlers:
     """Class for delete handlers"""
     id: int
 
+    def __init__(self):
+        pass
+
     async def del_vacancy(self, message: types.Message, state: FSMContext):
         try:
             self.id = int(message.text)

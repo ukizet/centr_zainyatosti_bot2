@@ -2,9 +2,9 @@ from aiogram import types
 
 from dataclasses import dataclass
 
-from keyboards import admin
+from keyboards import admin, start
 # from command_menu_handlers import CommandMenuHandlers
-from menu_handlers import MenuHandlers
+from .menu_handlers import MenuHandlers
 
 
 @dataclass
@@ -23,3 +23,10 @@ class ButtonsHandlers:
     async def schedule(self, message: types.Message):
         """This method is called when the schedule button is pressed"""
         await message.answer('з 08:00 до 17:00')
+
+    async def start(self, message: types.Message):
+        """This method/handler is called when user is
+        entering command that bot doesn't have.
+        This method/handler should be registered last."""
+        await message.answer('Виберіть потрібний розділ нижче👇',
+                             reply_markup=start)

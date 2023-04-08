@@ -5,7 +5,7 @@ from aiogram.dispatcher import FSMContext
 from create import db
 from keyboards import start
 
-from states import Add
+from .states import Add
 
 
 class AddHandlers:

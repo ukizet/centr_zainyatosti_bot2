@@ -1,14 +1,15 @@
 import inspect
 from dataclasses import dataclass
 
-from add_handlers import AddHandlers
 from aiogram import Dispatcher
 from aiogram.dispatcher.filters import Text
-from buttons_handlers import ButtonsHandlers
-from change_handlers import ChangeHandlers
-from delete_handlers import DeleteHandlers
-from search_handlers import SearchHandlers
-from states import Add, Change, Delete, Search
+
+from .add_handlers import AddHandlers
+from .buttons_handlers import ButtonsHandlers
+from .change_handlers import ChangeHandlers
+from .delete_handlers import DeleteHandlers
+from .search_handlers import SearchHandlers
+from .states import Add, Change, Delete, Search
 
 
 @dataclass
@@ -27,13 +28,22 @@ class RegHandlers:
     def reg_all(self):
         """This method calls all methods of the class except itself,
         and methods that start with '__'"""
-        methods = [method for method in
-                   dir(self.__class__.__name__) if
-                   callable(getattr(self.__class__.__name__, method)) and not
-                   method.startswith("__")]
-        for method in methods:
-            if method != inspect.currentframe().f_code.co_name:
+
+        self.methods_list = [method for method in dir(self) if callable(getattr(self, method)) and not method.startswith("__")]
+
+        print(f'methods: {self.methods_list}')
+        for method in self.methods_list:
+            if method == inspect.currentframe().f_code.co_name:
+                pass
+            else:
+                print(f'current method: {inspect.currentframe().f_code.co_name}')
+                print(f'for method: {method}')
+                # if method == 'capitalize':
+                #     continue
                 getattr(self, method)()
+
+    # def get_methods(self):
+    #     return [method for method in dir(self) if callable(getattr(self, method)) and not method.startswith("__")]
 
     def buttons(self):
         """This method registers handlers for buttons in start keyboard"""
@@ -63,7 +73,7 @@ class RegHandlers:
 
     def delete(self):
         delete = DeleteHandlers()
-        self.dp.register_message_handler(delete.id, state=Delete.id)
+        self.dp.register_message_handler(delete.del_vacancy, state=Delete.id)
 
     def change(self):
         change = ChangeHandlers()

@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from classes.states import Add, Change, Delete, Search
+from .states import Add, Change, Delete, Search
 from keyboards import cancel_button, start
 from create import db
 

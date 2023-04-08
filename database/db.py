@@ -1,12 +1,10 @@
+"""Db module for work with database"""
+import os
 import sqlite3 as sq
+from dataclasses import dataclass
 
 from aiogram import types
-
 from keyboards import start
-
-import os
-
-from dataclasses import dataclass
 
 
 @dataclass
