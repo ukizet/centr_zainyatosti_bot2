@@ -1,3 +1,4 @@
+"""Default client keyboard"""
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 start = ReplyKeyboardMarkup(resize_keyboard=True)\
