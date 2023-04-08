@@ -1,22 +1,28 @@
 import inspect
 from dataclasses import dataclass
 
+from add_handlers import AddHandlers
 from aiogram import Dispatcher
 from aiogram.dispatcher.filters import Text
 from buttons_handlers import ButtonsHandlers
-
-from add_handlers import AddHandlers
-
+from change_handlers import ChangeHandlers
+from delete_handlers import DeleteHandlers
+from search_handlers import SearchHandlers
 from states import Add, Change, Delete, Search
 
 
 @dataclass
 class RegHandlers:
-    """Клас для реєстрації хендлерів"""
+    """
+    Клас для реєстрації хендлерів.
+    Одразу після створення об'єкта класу,
+    викликається метод reg_all, який реєструє всі хендлери.
+    """
     dp: Dispatcher
 
     def __init__(self, dp: Dispatcher):
         self.dp = dp
+        self.reg_all()
 
     def reg_all(self):
         """This method calls all methods of the class except itself,
@@ -49,11 +55,11 @@ class RegHandlers:
     def add(self):
         add_obj = AddHandlers()
         self.dp.register_message_handler(
-            add_obj.load_name, state=Add.name)
+            add_obj.name, state=Add.name)
         self.dp.register_message_handler(
-            add_obj.load_desc, state=Add.desc)
+            add_obj.desc, state=Add.desc)
         self.dp.register_message_handler(
-            add_obj.load_salary, state=Add.salary)
+            add_obj.salary, state=Add.salary)
 
     def delete(self):
         delete = DeleteHandlers()

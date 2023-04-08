@@ -9,4 +9,4 @@ Bot is running through "launch.py"
 ## Where am i need to enter my bot token?
 
 In `.env` file.
-Read `.env.example` file 
+Read `.env.example` file for more information

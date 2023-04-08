@@ -32,14 +32,17 @@ class AddHandlers:
             else:
                 pass
 
-    async def load_name(self, message: types.Message, state: FSMContext):
+    async def name(self, message: types.Message, state: FSMContext):
+        """Handler for add name state"""
         await self.load_template(message=message, state=state,
                                  load_type='name', text='Пишіть опис вакансії')
 
-    async def load_desc(self, message: types.Message, state: FSMContext):
+    async def desc(self, message: types.Message, state: FSMContext):
+        """Handler for add desc state"""
         await self.load_template(message=message, state=state,
                                  load_type='desc', text='Пишіть ЗП')
 
-    async def load_salary(self, message: types.Message, state: FSMContext):
+    async def salary(self, message: types.Message, state: FSMContext):
+        """Handler for add salary state"""
         await self.load_template(message=message, state=state,
                                  load_type='salary', text='', finish=True)

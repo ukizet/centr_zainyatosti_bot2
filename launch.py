@@ -2,6 +2,8 @@ from aiogram import executor
 
 from create import dp
 
+from handlers import admin
+
 
 async def on_startup(dispatcher):
     print('Bot is online')

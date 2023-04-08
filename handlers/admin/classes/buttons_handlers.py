@@ -47,7 +47,7 @@ class ButtonsHandlers:
 
     async def search(self, message: types.Message):
         """Пошук вакансії"""
-        await message.answer('Ще в розробці', reply_markup=start)
+        # await message.answer('Ще в розробці', reply_markup=start)
         await Search.name.set()
         await message.answer('Введіть назву вакансії яку треба знайти',
                              reply_markup=cancel_button)
