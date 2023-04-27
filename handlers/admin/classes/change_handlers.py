@@ -55,7 +55,7 @@ class ChangeHandlers:
                                  reply_markup=cancel_button)
         else:
             # await db.sql_change(message=message, state=state)
-            await db.db_obj.update_data(message, 'vacancies',
+            await db.update_data(message, 'vacancies',
                                         f"status='{data['status']}'",
                                         f"id={data['id']}")
             await state.finish()
@@ -69,7 +69,7 @@ class ChangeHandlers:
             await message.answer('Введіть новий опис вакансії',
                                  reply_markup=cancel_button)
         else:
-            await db.db_obj.update_data(message, 'vacancies',
+            await db.update_data(message, 'vacancies',
                                         f"name='{data['name']}'",
                                         f"id={data['id']}")
             await state.finish()
@@ -82,7 +82,7 @@ class ChangeHandlers:
             await Change.salary.set()
             await message.answer('Введіть нову ЗП', reply_markup=cancel_button)
         else:
-            await db.db_obj.update_data(message, 'vacancies',
+            await db.update_data(message, 'vacancies',
                                         f"desc='{data['desc']}'",
                                         f"id={data['id']}")
             await state.finish()
@@ -92,12 +92,12 @@ class ChangeHandlers:
         async with state.proxy() as data:
             data['salary'] = message.text
         if data['choice'] == 5:
-            await db.db_obj.update_data(message, 'vacancies',
+            await db.update_data(message, 'vacancies',
                                         f"status='{data['status']}', name='{data['name']}', desc='{data['desc']}',salary='{data['salary']}'", f"id={data['id']}")
             await state.finish()
             await message.answer('Вакансія була змінена', reply_markup=start)
         else:
-            await db.db_obj.update_data(message, 'vacancies',
+            await db.update_data(message, 'vacancies',
                                         f"salary='{data['salary']}'", f"id={data['id']}")
             await state.finish()
             await message.answer('Вакансія була змінена', reply_markup=start)

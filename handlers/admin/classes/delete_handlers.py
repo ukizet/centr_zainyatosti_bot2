@@ -23,6 +23,6 @@ class DeleteHandlers:
             await message.answer(f'Помилка: {e}')
             return
         # await db.sql_delete(message=message)
-        await db.delete_data(message, 'vacancies', f'id={id}')
+        await db.delete_data(message, 'vacancies', f'id = {self.id}')
         await state.finish()
         await message.answer('Вакансія була видалена', reply_markup=start)

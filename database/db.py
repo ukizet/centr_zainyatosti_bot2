@@ -104,7 +104,8 @@ class Database:
             print(f'Помилка при оновленні даних: {e}')
             await message.answer(f'Помилка при оновленні даних: {e}', reply_markup=start)
 
-    async def delete_data(self, message: types.Message, table_name: str,
+    async def delete_data(self, message: types.Message,
+                          table_name: str = 'vacancies',
                           condition: str = None):
         """
         :param table_name: назва таблиці
@@ -114,13 +115,15 @@ class Database:
         query = f"DELETE FROM {table_name}"
         if condition is not None:
             query += f" WHERE {condition}"
-        try:
-            self.cursor.execute(query)
-            self.conn.commit()
-        except Exception as e:
-            print(f'Помилка при видаленні даних: {e}')
-            await message.answer(f'Помилка при видаленні даних: {e}',
-                                 reply_markup=start)
+        self.cursor.execute(query)
+        self.conn.commit()
+        # try:
+        #     self.cursor.execute(query)
+        #     self.conn.commit()
+        # except Exception as e:
+        #     print(f'Помилка при видаленні даних: {e}')
+        #     await message.answer(f'Помилка при видаленні даних: {e}',
+        #                          reply_markup=start)
 
     def close_connection(self):
         self.conn.close()

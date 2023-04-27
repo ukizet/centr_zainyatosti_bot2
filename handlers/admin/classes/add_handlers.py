@@ -3,7 +3,7 @@ from aiogram import types
 from aiogram.dispatcher import FSMContext
 
 from create import db
-from keyboards import start
+from keyboards import admin
 
 from .states import Add
 
@@ -18,7 +18,7 @@ class AddHandlers:
             data[f'{load_type}'] = message.text
         if finish is True:
             async with state.proxy() as data:
-                await message.answer(str(data), reply_markup=start)
+                await message.answer(str(data), reply_markup=admin)
             # await db.sql_add(state=state)
             async with state.proxy() as data:
                 await db.insert_data(message, 'vacancies',
