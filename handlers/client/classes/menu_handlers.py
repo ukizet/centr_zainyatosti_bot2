@@ -56,32 +56,34 @@ class MenuHandlers:
 
         self.vacs_list = self.all_vacancies[self.previous_page * self.VACANCIES_PER_PAGE: self.page * self.VACANCIES_PER_PAGE]
 
-        for i, vac in enumerate(self.vacs_list):
-            self.vacancy_info = (
-                                f"Назва вакансії: {vac[2]}\n"
-                                f"Опис: {vac[3]}\n"
-                                f"ЗП: {vac[4]}\n"
-                                )
-            
-            if callbackQuery is None:
+        if callbackQuery is None:
+            for i, vac in enumerate(self.vacs_list):
+                self.vacancy_info = (
+                                    f"Назва вакансії: {vac[2]}\n"
+                                    f"Опис: {vac[3]}\n"
+                                    f"ЗП: {vac[4]}\n"
+                                    )
+                
                 if i == 4:
                     test_message = await message.answer(self.vacancy_info,
                                                         reply_markup=self.inline_kb)
                 else:
                     test_message = await message.answer(self.vacancy_info)
                 self.messages_id.append(test_message.message_id)
-            else:
-                for i, id in enumerate(self.messages_id):
-                    if i == 4:
-                        await bot.edit_message_text(chat_id=self.chat_id,
-                                            message_id=id,
-                                            text="test",
-                                            reply_markup=self.inline_kb)
-                    else:
-                        await bot.edit_message_text(chat_id=self.chat_id,
-                                            message_id=id,
-                                            text="test")
-                    # self.messages_id.append(test_message.message_id)
+        else:
+            for i2, id in enumerate(self.messages_id):
+                # print(f'self.messages_id = {self.messages_id}')
+                # print(f'i = {i}')
+                if i2 == 4:
+                    await bot.edit_message_text(chat_id=self.chat_id,
+                                        message_id=id,
+                                        text="test",
+                                        reply_markup=self.inline_kb)
+                else:
+                    await bot.edit_message_text(chat_id=self.chat_id,
+                                        message_id=id,
+                                        text="test")
+                # self.messages_id.append(test_message.message_id)
 
     async def inline_button_back(self, callbackQuery: types.CallbackQuery):
         """Back button handler"""
