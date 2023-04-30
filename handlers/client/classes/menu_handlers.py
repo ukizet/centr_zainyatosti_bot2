@@ -71,10 +71,10 @@ class MenuHandlers:
                     test_message = await message.answer(self.vacancy_info)
                 self.messages_id.append(test_message.message_id)
         else:
-            for i2, id in enumerate(self.messages_id):
+            for i, id in enumerate(self.messages_id):
                 # print(f'self.messages_id = {self.messages_id}')
                 # print(f'i = {i}')
-                if i2 == 4:
+                if i == 4:
                     await bot.edit_message_text(chat_id=self.chat_id,
                                         message_id=id,
                                         text="test",
