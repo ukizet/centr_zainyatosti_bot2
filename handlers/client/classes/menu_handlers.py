@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from aiogram import types
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils import exceptions
 from create import bot, db
 
 
@@ -72,18 +73,28 @@ class MenuHandlers:
                 self.messages_id.append(test_message.message_id)
         else:
             for i, id in enumerate(self.messages_id):
+                print(f'i = {i}')
+                vacancy_info = (
+                               f"Назва вакансії: {self.vacs_list[i][2]}\n"
+                               f"Опис: {self.vacs_list[i][3]}\n"
+                               f"ЗП: {self.vacs_list[i][4]}\n"
+                               )
                 # print(f'self.messages_id = {self.messages_id}')
-                # print(f'i = {i}')
-                if i == 4:
-                    await bot.edit_message_text(chat_id=self.chat_id,
-                                        message_id=id,
-                                        text="test",
-                                        reply_markup=self.inline_kb)
-                else:
-                    await bot.edit_message_text(chat_id=self.chat_id,
-                                        message_id=id,
-                                        text="test")
-                # self.messages_id.append(test_message.message_id)
+                try:
+                    if i == 4:
+                        print('\n')
+                        await bot.edit_message_text(chat_id=self.chat_id,
+                                            message_id=id,
+                                            text=vacancy_info,
+                                            reply_markup=self.inline_kb)
+                    else:
+                        print('\n')
+                        await bot.edit_message_text(chat_id=self.chat_id,
+                                            message_id=id,
+                                            text=vacancy_info)
+                    # self.messages_id.append(test_message.message_id)
+                except exceptions.MessageNotModified:
+                    pass
 
     async def inline_button_back(self, callbackQuery: types.CallbackQuery):
         """Back button handler"""
