@@ -99,8 +99,10 @@ class MenuHandlers:
     async def inline_button_back(self, callbackQuery: types.CallbackQuery):
         """Back button handler"""
         if len(self.all_vacancies) <= self.VACANCIES_PER_PAGE:
+            callbackQuery.answer("Немає попередніх вакансій")
             return
         if self.page <= 1:
+            callbackQuery.answer("Немає попередніх вакансій")
             return
         self.previous_page = self.page-2
         self.page -= 1
@@ -112,6 +114,7 @@ class MenuHandlers:
         # зробити так щоб ця кнопка змінювала ці 5 вакансій на наступні 5 вакансій
 
         if len(self.all_vacancies) <= self.VACANCIES_PER_PAGE:
+            callbackQuery.answer("Немає наступних вакансій")
             return
         self.previous_page = self.page
         self.page += 1
