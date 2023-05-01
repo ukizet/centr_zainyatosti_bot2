@@ -73,7 +73,6 @@ class MenuHandlers:
                 self.messages_id.append(test_message.message_id)
         else:
             for i, id in enumerate(self.messages_id):
-                print(f'i = {i}')
                 vacancy_info = (
                                f"Назва вакансії: {self.vacs_list[i][2]}\n"
                                f"Опис: {self.vacs_list[i][3]}\n"
@@ -82,13 +81,11 @@ class MenuHandlers:
                 # print(f'self.messages_id = {self.messages_id}')
                 try:
                     if i == 4:
-                        print('\n')
                         await bot.edit_message_text(chat_id=self.chat_id,
                                             message_id=id,
                                             text=vacancy_info,
                                             reply_markup=self.inline_kb)
                     else:
-                        print('\n')
                         await bot.edit_message_text(chat_id=self.chat_id,
                                             message_id=id,
                                             text=vacancy_info)
