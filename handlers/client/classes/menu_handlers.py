@@ -72,24 +72,23 @@ class MenuHandlers:
                     test_message = await message.answer(self.vacancy_info)
                 self.messages_id.append(test_message.message_id)
         else:
-            for i, id in enumerate(self.messages_id):
+            for i in range(len(self.vacs_list)):
                 vacancy_info = (
                                f"Назва вакансії: {self.vacs_list[i][2]}\n"
                                f"Опис: {self.vacs_list[i][3]}\n"
                                f"ЗП: {self.vacs_list[i][4]}\n"
                                )
-                # print(f'self.messages_id = {self.messages_id}')
+                
                 try:
-                    if i == 4:
+                    if i == len(self.vacs_list)-1:
                         await bot.edit_message_text(chat_id=self.chat_id,
-                                            message_id=id,
+                                            message_id=self.messages_id[i],
                                             text=vacancy_info,
                                             reply_markup=self.inline_kb)
                     else:
                         await bot.edit_message_text(chat_id=self.chat_id,
-                                            message_id=id,
+                                            message_id=self.messages_id[i],
                                             text=vacancy_info)
-                    # self.messages_id.append(test_message.message_id)
                 except exceptions.MessageNotModified:
                     pass
 
