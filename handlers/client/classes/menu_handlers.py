@@ -32,6 +32,7 @@ class MenuHandlers:
                                       callback_data="next"))
         self.messages_id = []
         self.chat_id = 0
+        self.vacs_message = ''
         
     async def display_menu(self, message: types.Message = None,
                            callbackQuery: types.CallbackQuery = None):
@@ -77,20 +78,11 @@ class MenuHandlers:
                                f"Назва вакансії: {self.vacs_list[i][2]}\n"
                                f"Опис: {self.vacs_list[i][3]}\n"
                                f"ЗП: {self.vacs_list[i][4]}\n"
+                               "\n"
                                )
-                
-                try:
-                    if i == len(self.vacs_list)-1:
-                        await bot.edit_message_text(chat_id=self.chat_id,
-                                            message_id=self.messages_id[i],
-                                            text=vacancy_info,
-                                            reply_markup=self.inline_kb)
-                    else:
-                        await bot.edit_message_text(chat_id=self.chat_id,
-                                            message_id=self.messages_id[i],
-                                            text=vacancy_info)
-                except exceptions.MessageNotModified:
-                    pass
+
+                self.vacs_message += vacancy_info
+            print()
 
     async def inline_button_back(self, callbackQuery: types.CallbackQuery):
         """Back button handler"""
