@@ -55,11 +55,12 @@ class MenuHandlers:
                  InlineKeyboardButton(text="▶️",
                                       callback_data="next"))
 
-        self.vacs_list = self.all_vacancies[
-            self.previous_page * self.VACANCIES_PER_PAGE:
-            self.page * self.VACANCIES_PER_PAGE]
+        
 
         if callbackQuery is None:
+            self.vacs_list = self.all_vacancies[
+                self.previous_page * self.VACANCIES_PER_PAGE:
+                self.page * self.VACANCIES_PER_PAGE]
             self.vacs_message = ''
             for i in range(len(self.vacs_list)):
                 vacancy_info = (
@@ -76,7 +77,6 @@ class MenuHandlers:
                     self.messages_id.append(test_message.message_id)
                 else:
                     self.vacs_message += vacancy_info
-
         else:
             self.vacs_message = ''
             for i in range(len(self.vacs_list)):
@@ -104,21 +104,28 @@ class MenuHandlers:
         self.previous_page = self.page-2
         self.page -= 1
 
+        self.vacs_list = self.all_vacancies[
+            self.previous_page * self.VACANCIES_PER_PAGE:
+            self.page * self.VACANCIES_PER_PAGE]
+
         await self.display_menu(callbackQuery=callbackQuery)
 
     async def inline_button_next(self, callbackQuery: types.CallbackQuery):
         """Next button handler"""
-        # зробити так щоб ця кнопка змінювала ці 5 вакансій на наступні 5 вакансій
 
         if len(self.all_vacancies) <= self.VACANCIES_PER_PAGE:
             await callbackQuery.answer("Немає наступних вакансій")
             return
+        
         self.previous_page = self.page
         self.page += 1
-        await self.display_menu(callbackQuery=callbackQuery)
 
-        # for id in self.messages_id:
-        #     await bot.edit_message_text(chat_id=self.chat_id,
-        #                                    message_id=id,
-        #                                    text="test",
-        #                                    reply_markup=self.inline_kb)
+        self.vacs_list = self.all_vacancies[
+            self.previous_page * self.VACANCIES_PER_PAGE:
+            self.page * self.VACANCIES_PER_PAGE]
+        
+        if len(self.vacs_list) == 0:
+            await callbackQuery.answer("Немає наступних вакансій")
+            return
+
+        await self.display_menu(callbackQuery=callbackQuery)

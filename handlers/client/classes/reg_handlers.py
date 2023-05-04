@@ -27,7 +27,9 @@ class RegHandlers:
         """This method calls all methods of the class except itself,
         and methods that start with '__'"""
 
-        self.methods = [method for method in dir(self) if callable(getattr(self, method)) and not method.startswith("__")]
+        self.methods = [
+            method for method in dir(self) if callable(getattr(self, method))
+            and not method.startswith("__")]
 
         for method in self.methods:
             if method == inspect.currentframe().f_code.co_name:
