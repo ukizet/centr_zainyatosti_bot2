@@ -5,8 +5,12 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from create import bot, db
 
 
+class Button:
+    """Base class for buttons"""
+    pass
+
 @dataclass
-class MenuHandlers:
+class MenuHandlers(Button):
     """Class for handling menu buttons"""
 
     page: int
@@ -30,7 +34,6 @@ class MenuHandlers:
                  InlineKeyboardButton(text="▶️",
                                       callback_data="next"))
         self.messages_id = []
-        self.chat_id = 0
         self.vacs_message = ''
 
     async def display_menu(self, message: types.Message = None,
@@ -39,11 +42,6 @@ class MenuHandlers:
 
         Спочатку бот відправляє 5 повідомлень з вакансіями, 
         а потім відправляє кнопки для переходу на іншу сторінку."""
-
-        if self.chat_id == 0:
-            self.chat_id = message.chat.id
-        else:
-            pass
 
         self.all_vacancies = await db.select_data(message, '*', 'vacancies')
 
@@ -54,9 +52,7 @@ class MenuHandlers:
                                       callback_data="page"),
                  InlineKeyboardButton(text="▶️",
                                       callback_data="next"))
-
         
-
         if callbackQuery is None:
             self.vacs_list = self.all_vacancies[
                 self.previous_page * self.VACANCIES_PER_PAGE:
@@ -129,3 +125,29 @@ class MenuHandlers:
             return
 
         await self.display_menu(callbackQuery=callbackQuery)
+
+@dataclass
+class Filters(Button):
+    """Class for handling filters"""
+
+    names: list
+    salaries: list
+
+    def __init__(self):
+        self.names = []
+        self.salaries = []
+
+    async def add_name(self, message: types.Message):
+        """Adds name to names list"""
+
+        await message.answer("Введіть назву вакансії яку хочете залишити")
+        self.names += message.text
+        await message.answer("Назва вакансії додана")
+
+    async def add_salary(self, message: types.Message):
+        """Adds salary to salaries list"""
+
+        
+
+
+    

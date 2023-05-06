@@ -29,7 +29,7 @@ class Database:
         self.cursor = self.conn.cursor()
         self.create_table(
             'vacancies',
-            'ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, status TEXT DEFAULT "active", name TEXT, desc TEXT, salary REAL')
+            'ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, status TEXT DEFAULT "active", name TEXT, desc TEXT, salary INTEGER')
         if self.conn:
             print('Database connected(class Database)')
 
