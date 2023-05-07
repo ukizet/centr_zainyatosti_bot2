@@ -14,12 +14,12 @@ class RegHandlers:
     Одразу після створення об'єкта класу,
     викликається метод reg_all, який реєструє(викликає методи) всі хендлери крім себе.
     """
-    buttons_obj: ButtonsHandlers
+    buttons: ButtonsHandlers
     dp: Dispatcher
     methods: list
 
     def __init__(self, dp: Dispatcher):
-        self.buttons_obj = ButtonsHandlers()
+        self.buttons = ButtonsHandlers()
         self.dp = dp
         self.reg_all()
 
@@ -36,16 +36,22 @@ class RegHandlers:
                 pass
             else:
                 getattr(self, method)()
-        self.dp.register_message_handler(self.buttons_obj.start)
+        self.dp.register_message_handler(self.buttons.start)
 
-    def buttons(self):
-        self.dp.register_message_handler(self.buttons_obj.admin_panel,
+    def buttons_func(self):
+        self.dp.register_message_handler(self.buttons.admin_panel,
                                          Text(equals='Панель адміна'))
-        self.dp.register_message_handler(self.buttons_obj.schedule,
+        self.dp.register_message_handler(self.buttons.schedule,
                                          Text(equals='Графік роботи'))
-        self.dp.register_message_handler(self.buttons_obj.menu.display_menu,
-                                         Text(equals='Меню'))
+        self.dp.register_message_handler(self.buttons.menu.main,
+                                         Text(equals=self.buttons.menu.button_name))
+        self.dp.register_message_handler(self.buttons.menu.filters.main,
+                                         Text(equals=self.buttons.menu.filters.button_name))
+        self.dp.register_message_handler(self.buttons.menu.filters.names.add_name,
+                                         Text(equals=self.buttons.menu.filters.names.button_name))
         self.dp.register_callback_query_handler(
-            self.buttons_obj.menu.inline_button_back, text='back')
+            self.buttons.menu.back, text='back')
         self.dp.register_callback_query_handler(
-            self.buttons_obj.menu.inline_button_next, text='next')
+            self.buttons.menu.pages, text='page')
+        self.dp.register_callback_query_handler(
+            self.buttons.menu.next, text='next')

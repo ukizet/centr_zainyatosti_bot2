@@ -4,16 +4,16 @@ from dataclasses import dataclass
 
 from keyboards import admin, start
 # from command_menu_handlers import CommandMenuHandlers
-from .menu_handlers import MenuHandlers
+from .menu_handlers import Menu
 
 
 @dataclass
 class ButtonsHandlers:
     """This class is responsible for registering handlers for buttons"""
-    menu: MenuHandlers
+    menu: Menu
 
     def __init__(self):
-        self.menu = MenuHandlers()
+        self.menu = Menu()
 
     async def admin_panel(self, message: types.Message):
         """This method is called when the admin button is pressed"""

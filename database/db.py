@@ -68,8 +68,8 @@ class Database:
         """
         Цей метод повертає список списків, де кожен список це рядок з таблиці
 
-        :param table_name: назва таблиці
         :param columns: назви стовпців приблизно такого формату: 'name, desc, salary'
+        :param table_name: назва таблиці
         :param condition: умова вибору даних приблизно такого формату: 'salary > 1000'
         """
 
