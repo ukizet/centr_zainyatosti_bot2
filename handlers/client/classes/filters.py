@@ -1,10 +1,7 @@
 from dataclasses import dataclass
 
 from aiogram import types
-from aiogram.types import (
-    ReplyKeyboardMarkup
-)
-
+from aiogram.types import ReplyKeyboardMarkup
 
 from .button import Button
 
