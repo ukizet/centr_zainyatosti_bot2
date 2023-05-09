@@ -4,33 +4,14 @@ from aiogram import types
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
-    KeyboardButton,
-    ReplyKeyboardMarkup
+    ReplyKeyboardMarkup,
 )
 
 from create import bot, db
 
+from .button import Button
+from .filters import Filters
 
-@dataclass
-class Button:
-    """Base class for buttons"""
-
-    button_name: str
-    kb: ReplyKeyboardMarkup
-
-    def __init__(self):
-        self.button_name = ""
-        self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
-
-    def add_buttons_to_kb(self):
-        """Adds all buttons from class to class keyboard"""
-
-        for attr_name in self.__dict__:
-            attr = getattr(self, attr_name)
-            if isinstance(attr, Button):
-                self.kb.row(attr.button_name)
-            else:
-                pass
 
 @dataclass
 class Menu(Button):
@@ -101,7 +82,7 @@ class Menu(Button):
                                       callback_data="page"),
                  InlineKeyboardButton(text="▶️",
                                       callback_data="next"))
-        
+
         if callbackQuery is None:
             self.vacs_list = self.all_vacancies[
                 self.previous_page * self.VACANCIES_PER_PAGE:
@@ -166,83 +147,16 @@ class Menu(Button):
         if len(self.all_vacancies) <= self.VACANCIES_PER_PAGE:
             await callbackQuery.answer("Немає наступних вакансій")
             return
-        
+
         self.previous_page = self.page
         self.page += 1
 
         self.vacs_list = self.all_vacancies[
             self.previous_page * self.VACANCIES_PER_PAGE:
             self.page * self.VACANCIES_PER_PAGE]
-        
+
         if len(self.vacs_list) == 0:
             await callbackQuery.answer("Немає наступних вакансій")
             return
 
         await self.display_menu(callbackQuery=callbackQuery)
-
-@dataclass
-class Filters(Button):
-    """Class for handling filters"""
-
-    def __init__(self):
-        self.names = Names()
-        self.salaries = Salaries()
-        self.drop = Drop()
-
-        self.button_name = "Фільтри"
-        self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
-        self.add_buttons_to_kb()
-
-    async def main(self, message: types.Message):
-        """Main handler"""
-
-        await message.answer("Ось фільтри", reply_markup=self.kb)
-    
-@dataclass
-class Names(Button):
-    """Class that represents names button is filters"""
-    
-    names: list
-
-    def __init__(self):
-        self.button_name = "Назви вакансій"
-        self.names = []
-
-    async def add_name(self, message: types.Message):
-        """Adds name to names list"""
-
-        # !!! Це треба зробити на машині станів
-        await message.answer("Введіть назву вакансії яку хочете залишити")
-        self.names.append(message.text)
-        await message.answer("Назва вакансії додана")
-
-    def get_names(self) -> list:
-        """Returns names list"""
-
-        return self.names
-
-@dataclass
-class Salaries(Button):
-    """Class that represents salaries button in filters"""
-
-    salaries: list
-
-    def __init__(self):
-        self.button_name = "Зарплати"
-        self.salaries = []
-
-    async def add_salary(self, message: types.Message):
-        """Adds salary to salaries list"""
-
-
-@dataclass
-class Drop(Button):
-    """Class that represents drop button in filters"""
-
-    def __init__(self):
-        self.button_name = "Скинути фільтри"
-
-    async def drop_filters(self, message: types.Message):
-        """Drops all filters"""
-
-        await message.answer("Фільтри скинуті")
