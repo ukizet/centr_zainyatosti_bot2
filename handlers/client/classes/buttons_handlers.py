@@ -3,7 +3,6 @@ from aiogram import types
 from dataclasses import dataclass
 
 from keyboards import admin, start
-# from command_menu_handlers import CommandMenuHandlers
 from .menu_handlers import Menu
 
 

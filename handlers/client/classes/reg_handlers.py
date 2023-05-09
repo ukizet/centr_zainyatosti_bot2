@@ -14,6 +14,7 @@ class RegHandlers:
     Одразу після створення об'єкта класу,
     викликається метод reg_all, який реєструє(викликає методи) всі хендлери крім себе.
     """
+    
     buttons: ButtonsHandlers
     dp: Dispatcher
     methods: list
