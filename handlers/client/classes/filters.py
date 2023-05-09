@@ -2,6 +2,8 @@ from dataclasses import dataclass
 
 from aiogram import types
 from aiogram.types import ReplyKeyboardMarkup
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.dispatcher import FSMContext
 
 from .button import Button
 
@@ -34,19 +36,34 @@ class Names(Button):
     def __init__(self):
         self.button_name = "Назви вакансій"
         self.names = []
+        self.names_states = NamesStates()
 
     async def add_name(self, message: types.Message):
         """Adds name to names list"""
 
         # !!! Це треба зробити на машині станів
+        await NamesStates.name.set()
         await message.answer("Введіть назву вакансії яку хочете залишити")
-        self.names.append(message.text)
-        await message.answer("Назва вакансії додана")
 
     def get_names(self) -> list:
         """Returns names list"""
 
         return self.names
+
+
+class NamesStates(StatesGroup):
+    """States for names button in filters"""
+
+    name = State()
+
+    def __init__(self):
+        self.names = []
+
+    async def name_handler(self, message: types.Message, state: FSMContext):
+        """Handler for name state"""
+
+        self.names.append(message.text)
+        await state.finish()
 
 
 @dataclass
