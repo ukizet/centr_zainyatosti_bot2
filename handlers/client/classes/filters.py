@@ -31,24 +31,24 @@ class Filters(Button):
 class Names(Button):
     """Class that represents names button is filters"""
 
-    names: list
-
     def __init__(self):
         self.button_name = "Назви вакансій"
-        self.names = []
-        self.names_states = NamesStates()
+        self.states = NamesStates()
 
     async def add_name(self, message: types.Message):
         """Adds name to names list"""
 
         # !!! Це треба зробити на машині станів
+        if len(self.states.get_names()) >= 10:
+            await message.answer("Ви не можете вибрати більше 10 назв вакансій")
+            return
         await NamesStates.name.set()
         await message.answer("Введіть назву вакансії яку хочете залишити")
 
     def get_names(self) -> list:
         """Returns names list"""
 
-        return self.names
+        return self.states.get_names()
 
 
 class NamesStates(StatesGroup):
@@ -64,6 +64,12 @@ class NamesStates(StatesGroup):
 
         self.names.append(message.text)
         await state.finish()
+        await message.answer(f"self.names: {self.names}")
+
+    def get_names(self) -> list:
+        """Returns names list"""
+
+        return self.names
 
 
 @dataclass

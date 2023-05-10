@@ -50,8 +50,8 @@ class RegHandlers:
                                          Text(equals=self.buttons.menu.filters.button_name))
         self.dp.register_message_handler(self.buttons.menu.filters.names.add_name,
                                          Text(equals=self.buttons.menu.filters.names.button_name))
-        self.dp.register_message_handler(self.buttons.menu.filters.names.names_states.name_handler,
-                                         state=self.buttons.menu.filters.names.names_states.name)
+        self.dp.register_message_handler(self.buttons.menu.filters.names.states.name_handler,
+                                         state=self.buttons.menu.filters.names.states.name)
         self.dp.register_callback_query_handler(
             self.buttons.menu.back, text='back')
         self.dp.register_callback_query_handler(
