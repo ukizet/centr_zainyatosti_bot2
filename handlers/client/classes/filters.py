@@ -7,6 +7,8 @@ from aiogram.dispatcher import FSMContext
 
 from .button import Button
 
+from create import dp
+
 
 @dataclass
 class Filters(Button):
@@ -15,7 +17,7 @@ class Filters(Button):
     def __init__(self):
         self.names = Names()
         self.salaries = Salaries()
-        self.drop = Drop()
+        self.drop = Drop(self.names, self.salaries)
 
         self.button_name = "Фільтри"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -49,6 +51,11 @@ class Names(Button):
         """Returns names list"""
 
         return self.states.get_names()
+    
+    def clear_names(self):
+        """Clears names list"""
+
+        self.states.names.clear()
 
 
 class NamesStates(StatesGroup):
@@ -90,10 +97,16 @@ class Salaries(Button):
 class Drop(Button):
     """Class that represents drop button in filters"""
 
-    def __init__(self):
+    def __init__(self, names: Names, salaries: Salaries):
         self.button_name = "Скинути фільтри"
+        self.names = names
+        self.salaries = salaries
+
+        dp.register_message_handler(self.drop_filters,
+                                    lambda message: message.text == self.button_name)
 
     async def drop_filters(self, message: types.Message):
         """Drops all filters"""
 
+        self.names.clear_names()
         await message.answer("Фільтри скинуті")
