@@ -6,6 +6,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 
 from .button import Button
+from .menu_handlers import Menu
 
 from create import dp
 
@@ -14,10 +15,10 @@ from create import dp
 class Filters(Button):
     """Class for handling filters"""
 
-    def __init__(self):
+    def __init__(self, menu: Menu):
         self.names = Names()
         self.salaries = Salaries()
-        self.drop = Drop(self.names, self.salaries)
+        self.drop = Drop(menu)
 
         self.button_name = "Фільтри"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -88,7 +89,7 @@ class Salaries(Button):
 
         dp.register_message_handler(self.add_salary_range,
                                     lambda message: message.text == self.button_name)
-        dp.register_callback_query_handler(self.states.salary_handler, state=self.states.salary)
+        dp.register_message_handler(self.states.salary_handler, state=self.states.salary)
 
 
     async def add_salary_range(self, message: types.Message):
@@ -97,10 +98,15 @@ class Salaries(Button):
         await self.states.salary.set()
         await message.answer("Введіть діапазон зарплат. В такому форматі: 7000-12000")
 
-    def get_salaries(self) -> str:
-        """Returns salaries list"""
+    def get_salary_range(self) -> str:
+        """Returns salary range string"""
 
         return self.states.get_salary_range()
+    
+    def clear_salary_range(self):
+        """Clears salary range string"""
+
+        self.states.clear_salary_range()
 
 
 class SalariesStates(StatesGroup):
@@ -110,8 +116,6 @@ class SalariesStates(StatesGroup):
 
     def __init__(self):
         self.salary_range = ""
-
-        
 
     async def salary_handler(self, message: types.Message, state: FSMContext):
         """Handler for salary state"""
@@ -124,16 +128,20 @@ class SalariesStates(StatesGroup):
         """Returns salary range string"""
 
         return self.salary_range
+    
+    def clear_salary_range(self):
+        """Clears salary range string"""
+
+        self.salary_range = ""
 
 
 @dataclass
 class Drop(Button):
     """Class that represents drop button in filters"""
 
-    def __init__(self, names: Names, salaries: Salaries):
+    def __init__(self, menu: Menu):
         self.button_name = "Скинути фільтри"
-        self.names = names
-        self.salaries = salaries
+        self.menu = menu
 
         dp.register_message_handler(self.drop_filters,
                                     lambda message: message.text == self.button_name)
@@ -141,5 +149,5 @@ class Drop(Button):
     async def drop_filters(self, message: types.Message):
         """Drops all filters"""
 
-        self.names.clear_names()
+        self.menu.condition = ''
         await message.answer("Фільтри скинуті")

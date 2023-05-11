@@ -25,6 +25,7 @@ class Menu(Button):
     vacs_list: list
     messages_id = list
     chat_id: int
+    condition: str
 
     def __init__(self):
         self.page = 1
@@ -41,7 +42,7 @@ class Menu(Button):
         self.vacs_message = ''
         self.condition = ''
 
-        self.filters = Filters()
+        self.filters = Filters(menu=self)
 
         self.button_name = "Меню"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -62,18 +63,18 @@ class Menu(Button):
         if len(self.filters.names.get_names()) > 0:
             for i, name in enumerate(self.filters.names.get_names()):
                 if i == 0 and self.condition == '':
-                    self.condition += f"name = '{name}'"
+                    self.condition = f"name = '{name}'"
                 elif i == 0:
                     self.condition += f" AND name = '{name}'"
                 self.condition += f" OR name = '{name}'"
         else:
             pass
 
-        if self.filters.salaries.get_salaries() == '':
+        if self.filters.salaries.get_salary_range() == '':
             pass
         else:
-            if len(self.filters.salaries.get_salaries().split("-")) == 2:
-                min_salary, max_salary = self.filters.salaries.get_salaries().split("-")
+            if len(self.filters.salaries.get_salary_range().split("-")) == 2:
+                min_salary, max_salary = self.filters.salaries.get_salary_range().split("-")
                 if self.condition == '':
                     self.condition = f"salary BETWEEN {min_salary} AND {max_salary}"
                 else:
