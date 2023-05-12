@@ -6,7 +6,6 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher import FSMContext
 
 from .button import Button
-from .menu_handlers import Menu
 
 from create import dp
 
@@ -15,19 +14,53 @@ from create import dp
 class Filters(Button):
     """Class for handling filters"""
 
-    def __init__(self, menu: Menu):
+    def __init__(self):
         self.names = Names()
         self.salaries = Salaries()
-        self.drop = Drop(menu)
+        self.drop = Drop(filters=self)
 
         self.button_name = "Фільтри"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
         self.add_buttons_to_kb()
 
+        self.condition = ''
+
     async def main(self, message: types.Message):
         """Main handler"""
 
         await message.answer("Ось фільтри", reply_markup=self.kb)
+
+    async def get_condition(self, message: types.Message) -> str:
+        """Returns condition"""
+
+        if len(self.names.get_names()) > 0:
+            for i, name in enumerate(self.names.get_names()):
+                if i == 0 and self.condition == '':
+                    self.condition = f"name = '{name}'"
+                elif self.condition != '':
+                    self.condition += f" AND name = '{name}'"
+                else:
+                    self.condition += f" OR name = '{name}'"
+        else:
+            pass
+
+        if self.salaries.get_salary_range() == '' or self.salaries.get_salary_range() == "":
+            pass
+        elif len(self.salaries.get_salary_range().split("-")) == 2:
+            min_salary, max_salary = self.salaries.get_salary_range().split("-")
+            if self.condition == '':
+                self.condition = f"salary BETWEEN {min_salary} AND {max_salary}"
+            else:
+                self.condition += f" AND salary BETWEEN {min_salary} AND {max_salary}"
+        else:
+            await message.answer("Неправильний формат зарплати")
+
+        return self.condition
+    
+    def clear_condition(self): 
+        """Clears condition"""
+
+        self.condition = ''
 
 
 @dataclass
@@ -139,9 +172,9 @@ class SalariesStates(StatesGroup):
 class Drop(Button):
     """Class that represents drop button in filters"""
 
-    def __init__(self, menu: Menu):
+    def __init__(self, filters: Filters):
         self.button_name = "Скинути фільтри"
-        self.menu = menu
+        self.filters = filters
 
         dp.register_message_handler(self.drop_filters,
                                     lambda message: message.text == self.button_name)
@@ -149,5 +182,5 @@ class Drop(Button):
     async def drop_filters(self, message: types.Message):
         """Drops all filters"""
 
-        self.menu.condition = ''
+        self.filters.clear_condition()
         await message.answer("Фільтри скинуті")

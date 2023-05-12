@@ -42,7 +42,7 @@ class Menu(Button):
         self.vacs_message = ''
         self.condition = ''
 
-        self.filters = Filters(menu=self)
+        self.filters = Filters()
 
         self.button_name = "Меню"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -60,29 +60,9 @@ class Menu(Button):
         Спочатку бот відправляє 5 повідомлень з вакансіями, 
         а потім відправляє кнопки для переходу на іншу сторінку."""
 
-        if len(self.filters.names.get_names()) > 0:
-            for i, name in enumerate(self.filters.names.get_names()):
-                if i == 0 and self.condition == '':
-                    self.condition = f"name = '{name}'"
-                elif i == 0:
-                    self.condition += f" AND name = '{name}'"
-                self.condition += f" OR name = '{name}'"
-        else:
-            pass
+        self.condition = await self.filters.get_condition(message)
 
-        if self.filters.salaries.get_salary_range() == '':
-            pass
-        else:
-            if len(self.filters.salaries.get_salary_range().split("-")) == 2:
-                min_salary, max_salary = self.filters.salaries.get_salary_range().split("-")
-                if self.condition == '':
-                    self.condition = f"salary BETWEEN {min_salary} AND {max_salary}"
-                else:
-                    self.condition += f" AND salary BETWEEN {min_salary} AND {max_salary}"
-            else:
-                print("Wrong format")
-
-        if self.condition == '':
+        if self.condition == '' or self.condition == "":
             self.all_vacancies = await db.select_data(message, '*', 'vacancies')
         else:
             self.all_vacancies = await db.select_data(message,
