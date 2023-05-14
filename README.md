@@ -4,9 +4,11 @@ This is a telegram bot that allows you to view, add, delete and modify vacancies
 
 Bot is running through "launch.py"
 
-# FAQ
+Yeah.. I know that this project is very shitty, but i'm just learning python and i'm trying to do my best. My next project will be better.
 
-## Where am i need to enter my bot token?
+## FAQ
+
+### Where am i need to enter my bot token?
 
 In `.env` file.
 Read `.env.example` file for more information

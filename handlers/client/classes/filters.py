@@ -17,13 +17,14 @@ class Filters(Button):
     def __init__(self):
         self.names = Names()
         self.salaries = Salaries()
-        self.drop = Drop(filters=self)
+        self.drop = Drop()
 
         self.button_name = "Фільтри"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
         self.add_buttons_to_kb()
 
         self.condition = ''
+        self.old_names = []
 
     async def main(self, message: types.Message):
         """Main handler"""
@@ -33,14 +34,24 @@ class Filters(Button):
     async def get_condition(self, message: types.Message) -> str:
         """Returns condition"""
 
+        
+        await self.create_condition(message)
+        return self.condition
+    
+    async def create_condition(self, message: types.Message):
+        
         if len(self.names.get_names()) > 0:
-            for i, name in enumerate(self.names.get_names()):
-                if i == 0 and self.condition == '':
-                    self.condition = f"name = '{name}'"
-                elif self.condition != '':
-                    self.condition += f" AND name = '{name}'"
-                else:
-                    self.condition += f" OR name = '{name}'"
+            if self.old_names == self.names.get_names():
+                pass
+            else:
+                for i, name in enumerate(self.names.get_names()):
+                    if i == 0 and self.condition == '':
+                        self.condition = f"name = '{name}'"
+                    elif self.condition != '':
+                        self.condition += f" AND name = '{name}'"
+                    else:
+                        self.condition += f" OR name = '{name}'"
+                    self.old_names.append(name)
         else:
             pass
 
@@ -55,8 +66,6 @@ class Filters(Button):
         else:
             await message.answer("Неправильний формат зарплати")
 
-        return self.condition
-    
     def clear_condition(self): 
         """Clears condition"""
 
@@ -105,6 +114,7 @@ class NamesStates(StatesGroup):
         self.names.append(message.text)
         await state.finish()
         await message.answer(f"self.names: {self.names}")
+        await Filters().create_condition(message)
 
     def get_names(self) -> list:
         """Returns names list"""
@@ -172,9 +182,8 @@ class SalariesStates(StatesGroup):
 class Drop(Button):
     """Class that represents drop button in filters"""
 
-    def __init__(self, filters: Filters):
+    def __init__(self):
         self.button_name = "Скинути фільтри"
-        self.filters = filters
 
         dp.register_message_handler(self.drop_filters,
                                     lambda message: message.text == self.button_name)
@@ -182,5 +191,5 @@ class Drop(Button):
     async def drop_filters(self, message: types.Message):
         """Drops all filters"""
 
-        self.filters.clear_condition()
+        Filters().clear_condition()
         await message.answer("Фільтри скинуті")
