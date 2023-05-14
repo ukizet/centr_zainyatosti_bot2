@@ -15,7 +15,7 @@ class Filters(Button):
     """Class for handling filters"""
 
     def __init__(self):
-        self.names = Names(filters=self)
+        self.names = Names()
         self.salaries = Salaries()
         self.drop = Drop()
 
@@ -48,7 +48,7 @@ class Filters(Button):
                 for i, name in enumerate(self.names.get_names()):
                     if i == 0 and self.condition == '':
                         self.condition = f"name = '{name}'"
-                    elif self.condition != '' and self.condition != f"name = '{name}'":
+                    elif self.condition != '' and self.condition != f"name = '{name}'" and i == 0:
                         self.condition += f" AND name = '{name}'"
                     elif i > 0:
                         self.condition += f" OR name = '{name}'"
@@ -79,10 +79,9 @@ class Filters(Button):
 class Names(Button):
     """Class that represents names button is filters"""
 
-    def __init__(self, filters: Filters):
+    def __init__(self):
         self.button_name = "Назви вакансій"
-        self.filters = filters
-        self.states = NamesStates(filters=self)
+        self.states = NamesStates()
 
     async def add_name(self, message: types.Message):
         """Adds name to names list"""
@@ -109,9 +108,8 @@ class NamesStates(StatesGroup):
 
     name = State()
 
-    def __init__(self, filters: Filters):
+    def __init__(self):
         self.names = []
-        self.filters = filters
 
     async def name_handler(self, message: types.Message, state: FSMContext):
         """Handler for name state"""
