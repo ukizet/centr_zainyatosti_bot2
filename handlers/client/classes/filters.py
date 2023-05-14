@@ -15,7 +15,7 @@ class Filters(Button):
     """Class for handling filters"""
 
     def __init__(self):
-        self.names = Names()
+        self.names = Names(filters=self)
         self.salaries = Salaries()
         self.drop = Drop()
 
@@ -34,12 +34,13 @@ class Filters(Button):
     async def get_condition(self, message: types.Message) -> str:
         """Returns condition"""
 
-        
         await self.create_condition(message)
+
         return self.condition
     
     async def create_condition(self, message: types.Message):
-        
+        """Creates condition"""
+
         if len(self.names.get_names()) > 0:
             if self.old_names == self.names.get_names():
                 pass
@@ -47,10 +48,12 @@ class Filters(Button):
                 for i, name in enumerate(self.names.get_names()):
                     if i == 0 and self.condition == '':
                         self.condition = f"name = '{name}'"
-                    elif self.condition != '':
+                    elif self.condition != '' and self.condition != f"name = '{name}'":
                         self.condition += f" AND name = '{name}'"
-                    else:
+                    elif i > 0:
                         self.condition += f" OR name = '{name}'"
+                    else:
+                        pass
                     self.old_names.append(name)
         else:
             pass
@@ -76,9 +79,10 @@ class Filters(Button):
 class Names(Button):
     """Class that represents names button is filters"""
 
-    def __init__(self):
+    def __init__(self, filters: Filters):
         self.button_name = "Назви вакансій"
-        self.states = NamesStates()
+        self.filters = filters
+        self.states = NamesStates(filters=self)
 
     async def add_name(self, message: types.Message):
         """Adds name to names list"""
@@ -105,8 +109,9 @@ class NamesStates(StatesGroup):
 
     name = State()
 
-    def __init__(self):
+    def __init__(self, filters: Filters):
         self.names = []
+        self.filters = filters
 
     async def name_handler(self, message: types.Message, state: FSMContext):
         """Handler for name state"""
