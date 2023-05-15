@@ -62,7 +62,7 @@ class Menu(Button):
 
         self.condition = await self.filters.get_condition(message)
 
-        if self.condition == '' or self.condition == "":
+        if self.condition == '':
             self.all_vacancies = await db.select_data(message, '*', 'vacancies')
         else:
             self.all_vacancies = await db.select_data(message,
@@ -110,7 +110,7 @@ class Menu(Button):
 
                 self.vacs_message += vacancy_info
             await bot.edit_message_text(chat_id=callbackQuery.message.chat.id,
-                                        message_id=self.messages_id[0],
+                                        message_id=callbackQuery.message.message_id,
                                         text=self.vacs_message,
                                         reply_markup=self.inline_kb)
 
