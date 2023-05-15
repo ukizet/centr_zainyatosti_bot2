@@ -17,7 +17,7 @@ class Filters(Button):
     def __init__(self):
         self.names = Names()
         self.salaries = Salaries()
-        self.drop = Drop()
+        self.drop = Drop(self, self.names, self.salaries)
 
         self.button_name = "Фільтри"
         self.kb = ReplyKeyboardMarkup(resize_keyboard=True)
@@ -25,6 +25,7 @@ class Filters(Button):
 
         self.condition = ''
         self.old_names = []
+        self.EMPTY = ''
 
     async def main(self, message: types.Message):
         """Main handler"""
@@ -41,38 +42,48 @@ class Filters(Button):
     async def create_condition(self, message: types.Message):
         """Creates condition"""
 
+        
         if len(self.names.get_names()) > 0:
             if self.old_names == self.names.get_names():
                 pass
             else:
                 for i, name in enumerate(self.names.get_names()):
-                    if i == 0 and self.condition == '':
+                    # if i == 0 and self.condition == '':
+                    #     self.condition = f"name = '{name}'"
+                    # elif self.condition != '' and self.condition != f"name = '{name}'" and i == 0:
+                    #     self.condition += f" AND name = '{name}'"
+                    # elif i > 0:
+                    #     self.condition += f" OR name = '{name}'"
+                    # else:
+                    #     pass
+                    if i == 0 and self.condition == self.EMPTY:
                         self.condition = f"name = '{name}'"
-                    elif self.condition != '' and self.condition != f"name = '{name}'" and i == 0:
+                    if self.condition != self.EMPTY and "name" not in self.condition:
                         self.condition += f" AND name = '{name}'"
-                    elif i > 0:
+                    if i > 0 and name not in self.condition:
                         self.condition += f" OR name = '{name}'"
-                    else:
-                        pass
-                    self.old_names.append(name)
+                    if name not in self.old_names:
+                        self.old_names.append(name)
         else:
             pass
 
-        if self.salaries.get_salary_range() == '' or self.salaries.get_salary_range() == "":
+        if self.salaries.get_salary_range() == '':
             pass
         elif len(self.salaries.get_salary_range().split("-")) == 2:
             min_salary, max_salary = self.salaries.get_salary_range().split("-")
-            if self.condition == '':
+            if self.condition == self.EMPTY:
                 self.condition = f"salary BETWEEN {min_salary} AND {max_salary}"
-            else:
+            if self.condition != self.EMPTY and "salary" not in self.condition:
                 self.condition += f" AND salary BETWEEN {min_salary} AND {max_salary}"
         else:
             await message.answer("Неправильний формат зарплати")
+        pass
 
     def clear_condition(self): 
         """Clears condition"""
 
         self.condition = ''
+        self.old_names = []
 
 
 @dataclass
@@ -185,8 +196,11 @@ class SalariesStates(StatesGroup):
 class Drop(Button):
     """Class that represents drop button in filters"""
 
-    def __init__(self):
+    def __init__(self, filters: Filters, names: Names, salaries: Salaries):
         self.button_name = "Скинути фільтри"
+        self.filters = filters
+        self.names = names
+        self.salaries = salaries
 
         dp.register_message_handler(self.drop_filters,
                                     lambda message: message.text == self.button_name)
@@ -194,5 +208,7 @@ class Drop(Button):
     async def drop_filters(self, message: types.Message):
         """Drops all filters"""
 
-        Filters().clear_condition()
+        self.filters.clear_condition()
+        self.names.clear_names()
+        self.salaries.clear_salary_range()
         await message.answer("Фільтри скинуті")
