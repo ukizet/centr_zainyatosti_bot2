@@ -1,6 +1,6 @@
 from aiogram import executor
 from create import dp
-from handlers import admin, client
+from handlers import middlewares, admin, client
 
 
 async def on_startup(dispatcher):
